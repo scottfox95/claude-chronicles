@@ -3,22 +3,27 @@ date: 2026-03-09
 topic: Building an automated content pipeline from Claude Code sessions
 tags: claude-code, content, build-in-public, automation
 mode: builder
-tweet_count: 5
+tweet_count: 6
 ---
 
 # The Content Machine
 
 **1/**
-I use Claude Code every single day. Today I realized I'm sitting on a goldmine of content and doing nothing with it.
+I've been struggling to build a presence on X. I never know what to post, and when I do it feels forced.
 
-So I built a system to fix that in about 10 minutes.
+Today I realized the answer was right in front of me.
 
 **2/**
-The idea: every Claude Code session becomes an X thread automatically.
+I use Claude Code every single day. Every session I'm creating content and doing nothing with it.
 
-Built SOC2 reports? Thread.
-Debugged a gnarly auth flow? Thread.
-Shipped a feature in 20 min? Thread.
+So I built a system to fix that.
+
+**2/**
+Every Claude Code session becomes an X thread automatically.
+
+Built SOC2 compliance reports? Thread.
+Built a wealth management prospecting bot? Thread.
+Turned a content strategy into a flywheel? Thread.
 
 Your daily work IS the content. You just need to capture it.
 
@@ -42,8 +47,6 @@ Zero extra effort. The content writes itself from work I was already doing.
 First thread written by the system: this one.
 
 If you're building with AI tools daily and not documenting it, you're leaving content on the table.
-
-Ship the work. Ship the story.
 
 ---
 
