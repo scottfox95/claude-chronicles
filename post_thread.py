@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Save an X thread draft from a Claude Chronicles markdown file."""
+"""Post an X thread from a Claude Chronicles markdown file."""
 
 import sys
 import re
-import json
+import time
 from pathlib import Path
-from datetime import datetime
-
+from dotenv import load_dotenv
+import os
+import tweepy
 
 def parse_thread(filepath: str) -> list[str]:
     """Extract tweets from a thread markdown file."""
@@ -25,8 +26,10 @@ def parse_thread(filepath: str) -> list[str]:
     return tweets
 
 
-def save_draft(filepath: str, dry_run: bool = False):
-    """Save a thread as a local draft for manual posting on X."""
+def post_thread(filepath: str, dry_run: bool = False):
+    """Post a thread to X."""
+    load_dotenv(Path(__file__).parent / '.env')
+
     tweets = parse_thread(filepath)
 
     if not tweets:
@@ -46,41 +49,29 @@ def save_draft(filepath: str, dry_run: bool = False):
         print(f"  {tweet[:100]}{'...' if len(tweet) > 100 else ''}")
 
     if dry_run:
-        print("\n[DRY RUN] No draft saved.")
+        print("\n[DRY RUN] No tweets posted.")
         return
 
-    # Save draft as JSON for easy copy-paste when posting manually
-    drafts_dir = Path(__file__).parent / 'drafts'
-    drafts_dir.mkdir(exist_ok=True)
+    client = tweepy.Client(
+        consumer_key=os.environ['X_CONSUMER_KEY'],
+        consumer_secret=os.environ['X_CONSUMER_SECRET'],
+        access_token=os.environ['X_ACCESS_TOKEN'],
+        access_token_secret=os.environ['X_ACCESS_TOKEN_SECRET'],
+    )
 
-    source_name = Path(filepath).stem
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    draft_path = drafts_dir / f"{source_name}_{timestamp}.json"
-
-    draft = {
-        'source': filepath,
-        'created_at': datetime.now().isoformat(),
-        'tweet_count': len(tweets),
-        'tweets': [
-            {'index': i, 'text': tweet, 'chars': len(tweet)}
-            for i, tweet in enumerate(tweets, 1)
-        ],
-    }
-
-    draft_path.write_text(json.dumps(draft, indent=2))
-    print(f"\nDraft saved to: {draft_path}")
-
-    # Also save a plain text version for easy copy-paste
-    txt_path = draft_path.with_suffix('.txt')
-    lines = []
+    print("\nPosting...")
+    previous_id = None
     for i, tweet in enumerate(tweets, 1):
-        lines.append(f"--- Tweet {i}/{len(tweets)} ({len(tweet)} chars) ---")
-        lines.append(tweet)
-        lines.append("")
-    txt_path.write_text("\n".join(lines))
-    print(f"Plain text copy-paste version: {txt_path}")
+        response = client.create_tweet(
+            text=tweet,
+            in_reply_to_tweet_id=previous_id,
+        )
+        previous_id = response.data['id']
+        print(f"  Posted tweet {i}/{len(tweets)} (id: {previous_id})")
+        if i < len(tweets):
+            time.sleep(1)  # Be nice to the API
 
-    print(f"\nReady to post! Open X and copy each tweet from the draft files above.")
+    print(f"\nThread posted! https://x.com/scottfox95/status/{tweets and previous_id}")
 
 
 if __name__ == '__main__':
@@ -90,4 +81,4 @@ if __name__ == '__main__':
 
     filepath = sys.argv[1]
     dry_run = '--dry-run' in sys.argv
-    save_draft(filepath, dry_run)
+    post_thread(filepath, dry_run)
