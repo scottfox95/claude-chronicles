@@ -14,7 +14,7 @@ Karpathy's autoresearch lets AI agents run 700 experiments overnight to optimize
 I just applied the same pattern to enterprise sales outreach.
 
 **2/**
-The idea: a hiring manager I'm talking to mentioned he's going back to school for ML. I wanted to build something that connects cutting-edge AI research to his company's actual business.
+The idea: a client I'm talking to mentioned he's going back to school for ML. I wanted to build something that connects cutting-edge AI research to his company's actual business.
 
 So I asked: what if sales messaging was the model being optimized?
 
